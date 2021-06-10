@@ -10,6 +10,12 @@ make the links between languages relative.
  selector, so you will only capable to access to other languages than the
  current.
 
+## Installation
+
+```
+pip install mkdocs-material-relative-language-selector
+```
+
 ## Example configuration
 
 ### With [mkdocs-mdpo-plugin][mkdocs-mdpo-plugin-link]
