@@ -20,7 +20,7 @@ class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
             )
             raise mkdocs.config.base.ValidationError(msg)
 
-        theme_language = config['theme'].get('language')
+        theme_language = config['theme'].language
         if not theme_language:
             msg = (
                 'relative-material-language-selector only available defining'
