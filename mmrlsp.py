@@ -7,6 +7,9 @@ import mkdocs
 
 
 class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
+    def __init__(self, *args, **kwargs):
+        self._docs_assets_javascript_path = None
+
     def on_files(self, files, config):
         """Add 'relative-material-language-selector.js' script to the files
         of the build.
@@ -20,7 +23,7 @@ class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
             )
             raise mkdocs.config.base.ValidationError(msg)
 
-        theme_language = config['theme'].language
+        theme_language = config['theme']['language']
         if not theme_language:
             msg = (
                 'relative-material-language-selector only available defining'
@@ -55,6 +58,8 @@ class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
             docs_assets_javascripts_dir,
             filename,
         )
+
+        self._docs_assets_javascript_path = docs_assets_javascript_path
 
         if not os.path.isfile(docs_assets_javascript_path):
             with tempfile.TemporaryDirectory() as dirname:
@@ -92,3 +97,10 @@ class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
         new_files.append(rel_mls_filepath)
 
         return new_files
+
+    def on_post_build(self, config):
+        if os.path.isfile(self._docs_assets_javascript_path):
+            try:
+                os.remove(self._docs_assets_javascript_path)
+            except PermissionError:
+                pass
