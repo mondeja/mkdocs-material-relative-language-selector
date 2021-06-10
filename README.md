@@ -38,8 +38,15 @@ extra:
     - name: Español
       link: es
       lang: es
-
 ```
+
+## Configuration
+
+- If you want to publish your site in Github Pages, you don't need to define any
+ setting because is the default configuration.
+- If you want to serve your site
+ under a custom root domain, define `root_domain: true` to get correct links
+ between languages.
 
 ## Projects using it
 

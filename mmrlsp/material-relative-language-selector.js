@@ -1,8 +1,6 @@
-var ORIGINAL_LANG = "{{original_lang}}",
-    GITHUB_PAGES = {{github_pages}},
-    ROOT_DOMAIN = {{root_domain}};
+var ORIGINAL_LANG = "{{original_lang}}";
 
-var PATH_SPLITTER_INDEX = ROOT_DOMAIN ? 1 : 2;
+var PATH_SPLITTER_INDEX = {{root_domain}} ? 1 : 2;
 
 var getCurrentLang = function() {
   var pathSplit = window.location.pathname.split("/");

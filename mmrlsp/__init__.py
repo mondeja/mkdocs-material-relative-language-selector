@@ -7,7 +7,7 @@ import mkdocs
 from mkdocs.config.config_options import Type
 
 
-__version__ = '1.1.0a'
+__version__ = '1.1.0'
 
 
 class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
@@ -90,9 +90,6 @@ class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
                 new_content = template_content.replace(
                     '{{original_lang}}',
                     theme_language,
-                ).replace(
-                    '{{github_pages}}',
-                    'true' if self.config['github_pages'] else 'false',
                 ).replace(
                     '{{root_domain}}',
                     'true' if self.config['root_domain'] else 'false',
