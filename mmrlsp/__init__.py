@@ -7,7 +7,11 @@ import mkdocs
 from mkdocs.config.config_options import Type
 
 
-__version__ = '1.1.0'
+__version__ = '1.1.1'
+
+MKDOCS_MINOR_VERSION_INFO = tuple(
+    int(n) for n in mkdocs.__version__.split('.')[:2]
+)
 
 
 class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
@@ -118,8 +122,21 @@ class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
         return new_files
 
     def on_post_build(self, config):
+        self._clean()
+
+    def _clean(self):
         if os.path.isfile(self._docs_assets_javascript_path):
             try:
                 os.remove(self._docs_assets_javascript_path)
             except PermissionError:
                 pass
+
+
+if MKDOCS_MINOR_VERSION_INFO >= (1, 2):
+
+    def on_build_error(self, error):
+        self.clean()
+
+    MkdocsMaterialRelativeLanguageSelectorPlugin.on_build_error = (
+        on_build_error
+    )
