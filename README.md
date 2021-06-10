@@ -1,5 +1,7 @@
 # mkdocs-material-relative-language-selector
 
+[![PyPI version][project-pypi-version-badge]][project-pypi-link]
+
 Edit the builtin [mkdocs-material site selector][mkdocs-material-ss-link] to
 make the links between languages relative.
 
@@ -55,3 +57,5 @@ extra:
 
 [mkdocs-material-ss-link]: https://squidfunk.github.io/mkdocs-material/setup/changing-the-language/#site-language-selector
 [mkdocs-mdpo-plugin-link]: https://mondeja.github.io/mkdocs-mdpo-plugin/
+[project-pypi-version-badge]: https://img.shields.io/pypi/v/mkdocs-material-relative-language-selector?label=version
+[project-pypi-link]: https://pypi.org/project/mkdocs-material-relative-language-selector/
