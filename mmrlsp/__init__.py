@@ -6,7 +6,7 @@ import tempfile
 import mkdocs
 
 
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 
 
 class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
@@ -17,7 +17,7 @@ class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
         """Add 'relative-material-language-selector.js' script to the files
         of the build.
         """
-        new_files = mkdocs.structure.files.Files([])
+        new_files = files
 
         if config['theme'].name != 'material':  # not using material theme
             msg = (
