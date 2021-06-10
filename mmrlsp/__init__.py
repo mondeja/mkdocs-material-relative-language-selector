@@ -6,6 +6,9 @@ import tempfile
 import mkdocs
 
 
+__version__ = '0.0.2'
+
+
 class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
     def __init__(self, *args, **kwargs):
         self._docs_assets_javascript_path = None
