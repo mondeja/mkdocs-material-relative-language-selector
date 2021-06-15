@@ -40,3 +40,10 @@ repos:
         args:
           - --filter-files
         files: \.py$
+  - repo: https://github.com/mondeja/repo-stream
+    rev: v1.0.2
+    hooks:
+      - id: repo-stream
+        args:
+          - -config=https://github.com/mondeja/repo-stream-config
+          - -updater=upstream
