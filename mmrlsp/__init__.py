@@ -2,6 +2,7 @@
 
 import os
 import tempfile
+import uuid
 
 import mkdocs
 from mkdocs.config.config_options import Type
@@ -9,19 +10,12 @@ from mkdocs.config.config_options import Type
 
 __version__ = '1.1.1'
 
-MKDOCS_MINOR_VERSION_INFO = tuple(
-    int(n) for n in mkdocs.__version__.split('.')[:2]
-)
-
 
 class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
     config_scheme = (
         ('github_pages', Type(bool, default=True)),
         ('root_domain', Type(bool, default=False)),
     )
-
-    def __init__(self, *args, **kwargs):
-        self._docs_assets_javascript_path = None
 
     def on_config(self, config, **kwargs):
         if self.config['root_domain']:
@@ -51,92 +45,49 @@ class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
             )
             raise mkdocs.config.base.ValidationError(msg)
 
-        if config.get('extra_javascript'):
-            docs_assets_javascripts_dir = os.path.abspath(
-                os.path.join(
-                    config['docs_dir'],
-                    os.path.dirname(config['extra_javascript'][0]),
-                ),
+        tempdir = tempfile.gettempdir()
+
+        temp_filepath_exists = True
+        while temp_filepath_exists:
+            temp_filepath = os.path.join(
+                tempdir,
+                uuid.uuid4().hex + '.js',
             )
-        else:
-            docs_assets_dir = os.path.join(config['docs_dir'], 'assets')
-            if not os.path.isdir(docs_assets_dir):
-                os.mkdir(docs_assets_dir)
-            docs_assets_javascripts_dir = os.path.join(
-                docs_assets_dir,
-                'javascripts',
-            )
+            temp_filepath_exists = os.path.exists(temp_filepath)
 
-            config['extra_javascript'] = []
-
-        if not os.path.isdir(docs_assets_javascripts_dir):
-            os.mkdir(docs_assets_javascripts_dir)
-
-        filename = 'material-relative-language-selector.js'
-        docs_assets_javascript_path = os.path.join(
-            docs_assets_javascripts_dir,
-            filename,
+        javascript_template_filepath = os.path.join(
+            os.path.abspath(os.path.dirname(__file__)),
+            'material-relative-language-selector.js',
         )
 
-        self._docs_assets_javascript_path = docs_assets_javascript_path
+        with open(javascript_template_filepath) as f:
+            template_content = f.read()
 
-        if not os.path.isfile(docs_assets_javascript_path):
-            with tempfile.TemporaryDirectory() as dirname:
-                javascript_template_filepath = os.path.join(
-                    os.path.abspath(os.path.dirname(__file__)),
-                    filename,
-                )
-
-                temp_filepath = os.path.join(dirname, 'mmrlsp.js')
-                with open(javascript_template_filepath) as f:
-                    template_content = f.read()
-
-                new_content = template_content.replace(
-                    '{{original_lang}}',
-                    theme_language,
-                ).replace(
-                    '{{root_domain}}',
-                    'true' if self.config['root_domain'] else 'false',
-                )
-
-                with open(temp_filepath, 'w') as f:
-                    f.write(new_content)
-
-                os.rename(temp_filepath, docs_assets_javascript_path)
-
-        rel_assets_javascript_path = os.path.relpath(
-            docs_assets_javascript_path,
-            config['docs_dir'],
+        new_content = template_content.replace(
+            '{{original_lang}}',
+            theme_language,
+        ).replace(
+            '{{root_domain}}',
+            'true' if self.config['root_domain'] else 'false',
         )
 
-        config['extra_javascript'].append(rel_assets_javascript_path)
+        with open(temp_filepath, 'w') as f:
+            f.write(new_content)
+
+        clean_temp_filepath = os.path.join(tempdir, 'mmrls.js')
+        if os.path.isfile(clean_temp_filepath):
+            os.remove(clean_temp_filepath)
+        os.rename(
+            temp_filepath,
+            clean_temp_filepath,
+        )
 
         rel_mls_filepath = mkdocs.structure.files.File(
-            rel_assets_javascript_path,
-            config['docs_dir'],
-            config['site_dir'],
+            os.path.basename(clean_temp_filepath),
+            tempdir,
+            os.path.join(config['site_dir'], 'assets'),
             config['use_directory_urls'],
         )
         new_files.append(rel_mls_filepath)
 
         return new_files
-
-    def on_post_build(self, config):
-        self._clean()
-
-    def _clean(self):
-        if os.path.isfile(self._docs_assets_javascript_path):
-            try:
-                os.remove(self._docs_assets_javascript_path)
-            except PermissionError:
-                pass
-
-
-if MKDOCS_MINOR_VERSION_INFO >= (1, 2):
-
-    def on_build_error(self, error):
-        self.clean()
-
-    MkdocsMaterialRelativeLanguageSelectorPlugin.on_build_error = (
-        on_build_error
-    )
