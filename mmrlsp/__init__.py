@@ -17,9 +17,6 @@ class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
         ('root_domain', Type(bool, default=False)),
     )
 
-    def __init__(self, *args, **kwargs):
-        self._docs_assets_javascript_path = None
-
     def on_config(self, config, **kwargs):
         if self.config['root_domain']:
             self.config['github_pages'] = False
