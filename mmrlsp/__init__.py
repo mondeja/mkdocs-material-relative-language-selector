@@ -8,7 +8,7 @@ import mkdocs
 from mkdocs.config.config_options import Type
 
 
-__version__ = '1.1.2'
+__version__ = '1.1.3'
 
 
 class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
