@@ -8,7 +8,7 @@ import mkdocs
 from mkdocs.config.config_options import Type
 
 
-__version__ = '1.1.1'
+__version__ = '1.1.2'
 
 
 class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
@@ -82,12 +82,18 @@ class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
             clean_temp_filepath,
         )
 
-        rel_mls_filepath = mkdocs.structure.files.File(
+        file = mkdocs.structure.files.File(
             os.path.basename(clean_temp_filepath),
             tempdir,
-            os.path.join(config['site_dir'], 'assets'),
+            os.path.join(config['site_dir'], 'assets', 'javascripts'),
             config['use_directory_urls'],
         )
-        new_files.append(rel_mls_filepath)
+        new_files.append(file)
+
+        if not config.get('extra_javascript'):
+            config['extra_javascript'] = []
+        config['extra_javascript'].append(
+            os.path.join('assets', 'javascripts', 'mmrls.js'),
+        )
 
         return new_files
