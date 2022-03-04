@@ -8,20 +8,13 @@ import mkdocs
 from mkdocs.config.config_options import Type
 
 
-__version__ = '1.1.3'
+__version__ = '1.1.4'
 
 
 class MkdocsMaterialRelativeLanguageSelectorPlugin(mkdocs.plugins.BasePlugin):
     config_scheme = (
-        ('github_pages', Type(bool, default=True)),
         ('root_domain', Type(bool, default=False)),
     )
-
-    def on_config(self, config, **kwargs):
-        if self.config['root_domain']:
-            self.config['github_pages'] = False
-        elif not self.config['github_pages']:
-            self.config['github_pages'] = True
 
     def on_files(self, files, config):
         """Add 'relative-material-language-selector.js' script to the files
